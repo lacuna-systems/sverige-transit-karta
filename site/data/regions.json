@@ -8,14 +8,14 @@
    "feed_version": "2026-10-19",
    "bbox": [
     11.6076,
-    55.6592,
+    55.6588,
     21.4503,
     65.7953
    ],
    "modes": {
     "tram": 28,
     "metro": 7,
-    "train": 135,
+    "train": 144,
     "bus": 3516,
     "ferry": 60
    },
@@ -23,14 +23,14 @@
     "bus",
     "ferry"
    ],
-   "lines": 3746,
-   "stations": 49101
+   "lines": 3755,
+   "stations": 49103
   },
   {
    "id": "vt",
    "name": "Västtrafik",
    "area": "Västra Götaland",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     11.2628,
     57.3881,
@@ -71,7 +71,7 @@
    "id": "skane",
    "name": "Skånetrafiken",
    "area": "Skåne",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     12.5823,
     55.3802,
@@ -198,7 +198,7 @@
    "id": "klt",
    "name": "Kalmar länstrafik",
    "area": "Kalmar",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     15.313,
     56.3529,
@@ -252,7 +252,7 @@
    "id": "varm",
    "name": "Värmlandstrafik",
    "area": "Värmland",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     12.1144,
     59.1216,
@@ -270,7 +270,7 @@
    "id": "orebro",
    "name": "Länstrafiken Örebro",
    "area": "Örebro",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     14.4601,
     58.8544,
@@ -287,7 +287,7 @@
    "id": "vastmanland",
    "name": "VL",
    "area": "Västmanland",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     15.6793,
     59.3964,
@@ -304,7 +304,7 @@
    "id": "dt",
    "name": "Dalatrafik",
    "area": "Dalarna",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     13.0714,
     60.0704,
@@ -321,7 +321,7 @@
    "id": "xt",
    "name": "X-trafik",
    "area": "Gävleborg",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     15.7082,
     60.416,
@@ -339,7 +339,7 @@
    "id": "dintur",
    "name": "Din Tur",
    "area": "Västernorrland",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     15.2102,
     62.219,
@@ -356,7 +356,7 @@
    "id": "jamtland",
    "name": "Länstrafiken Jämtland",
    "area": "Jämtland",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     12.6808,
     61.8261,
@@ -373,7 +373,7 @@
    "id": "vasterbotten",
    "name": "Länstrafiken Västerbotten",
    "area": "Västerbotten",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     15.1432,
     63.564,
@@ -390,7 +390,7 @@
    "id": "norrbotten",
    "name": "Länstrafiken Norrbotten",
    "area": "Norrbotten",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     17.1692,
     64.3338,
@@ -407,7 +407,7 @@
    "id": "trains",
    "name": "Long-distance trains",
    "area": "SJ, Snälltåget, Tågab, MTRX",
-   "feed_version": "2026-10-18",
+   "feed_version": "2026-10-19",
    "bbox": [
     10.6564,
     47.4542,
@@ -415,10 +415,10 @@
     68.4288
    ],
    "modes": {
-    "train": 67
+    "train": 76
    },
-   "lines": 67,
-   "stations": 210
+   "lines": 76,
+   "stations": 213
   }
  ]
 }
