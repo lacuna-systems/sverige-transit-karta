@@ -8,6 +8,10 @@ båtlinjer hos 21 regionala trafikhuvudmän samt fjärrtågen, ritade längs sin
 med hållplatser, filter baserade på tidtabellen och en vy över hela Sverige. Gränssnittet finns på
 svenska och engelska, med ljust och mörkt tema.
 
+**Webbplats: <https://transit-karta.lacunasystems.se/>**
+
+<p align="center"><img src="screenshot.png" alt="Vyn över hela Sverige i mörkt tema" width="280"></p>
+
 Webbplatsen är helt statisk (`site/`). All bearbetning görs i förväg i Python, med enbart
 standardbiblioteket, och en GitHub Action uppdaterar datan varje vecka.
 

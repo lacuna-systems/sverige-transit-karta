@@ -7,6 +7,10 @@ An interactive map of Sweden's public transport: every tram, metro, train, bus a
 21 regional operators plus the long-distance trains, drawn along their real routes, with stops,
 timetable-based filters and an all-of-Sweden view. The interface is in English and Swedish, with light and dark themes.
 
+**Live site: <https://transit-karta.lacunasystems.se/>**
+
+<p align="center"><img src="screenshot.png" alt="The all-of-Sweden view in the dark theme" width="280"></p>
+
 The site is fully static (`site/`). All processing happens ahead of time in Python, using only
 the standard library, and a GitHub Action refreshes the data weekly.
 
