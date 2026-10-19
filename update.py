@@ -17,6 +17,7 @@ all-of-Sweden view is rebuilt from the regions' data at the end of every run.
 """
 
 import argparse
+import gzip
 import json
 import os
 import shutil
@@ -47,9 +48,12 @@ NETEX_CALL_SPACING_S = 7  # Trafiklab allows 10 calls a minute
 def download(url, dest, attempts=3):
     for i in range(attempts):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": osm.USER_AGENT, "Accept-Encoding": "identity"})
+            # Trafiklab answers 406 unless the request accepts gzip; a zip is rarely re-compressed, but
+            # undo it if the server does.
+            req = urllib.request.Request(url, headers={"User-Agent": osm.USER_AGENT, "Accept-Encoding": "gzip"})
             with urllib.request.urlopen(req, timeout=600) as resp, open(dest, "wb") as f:
-                shutil.copyfileobj(resp, f, 1 << 20)
+                body = gzip.GzipFile(fileobj=resp) if resp.headers.get("Content-Encoding") == "gzip" else resp
+                shutil.copyfileobj(body, f, 1 << 20)
             if zipfile.is_zipfile(dest):
                 return
             raise RuntimeError("response is not a zip file")

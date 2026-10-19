@@ -2,6 +2,7 @@
   "locale": "sv-SE",
   "title": "Sveriges kollektivtrafik på karta",
   "attribution": "Tidtabelldata: <a href=\"https://www.trafiklab.se/api/gtfs-datasets/gtfs-regional/\">Samtrafiken / Trafiklab GTFS Regional</a> · Linjefärger och järnvägsgeometri för tåg som saknar linjesträckning: © OpenStreetMap-bidragsgivare",
+  "credit": "Skapad av",
 
   "panel.toggle": "Visa eller dölj panelen",
   "panel.hide": "Dölj",

@@ -2,6 +2,7 @@
   "locale": "en-GB",
   "title": "Swedish Transit Map",
   "attribution": "Timetable data: <a href=\"https://www.trafiklab.se/api/gtfs-datasets/gtfs-regional/\">Samtrafiken / Trafiklab GTFS Regional</a> · Line colours and rail geometry for trains without shapes: © OpenStreetMap contributors",
+  "credit": "Made by",
 
   "panel.toggle": "Toggle panel",
   "panel.hide": "Hide",
