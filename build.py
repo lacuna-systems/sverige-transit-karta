@@ -11,10 +11,12 @@ usable train shapes from cache/osm-rail.json when present.
 """
 
 import csv
+import hashlib
 import heapq
 import json
 import math
 import os
+import pickle
 import re
 import sys
 from collections import Counter, defaultdict
@@ -113,24 +115,56 @@ class Feeds:
                                 row[col] = prefix + row[col]
                     yield row
 
+    def columns(self, name, cols):
+        """Like rows, but yields only the named columns as a tuple (None where a feed lacks one). Much
+        faster than rows for the big tables (shapes, stop_times)."""
+        for i, d in enumerate(self.dirs):
+            if not (d / name).exists():
+                continue
+            prefix = f"{i}:" if len(self.dirs) > 1 else ""
+            with open(d / name, newline="", encoding="utf-8-sig") as f:
+                reader = csv.reader(f)
+                header = next(reader, [])
+                idx = [header.index(c) if c in header else None for c in cols]
+                ids = [j for j, c in enumerate(cols) if prefix and c in ID_COLUMNS]
+                n = len(header)
+                for r in reader:
+                    if not r:
+                        continue
+                    if len(r) < n:
+                        r += [None] * (n - len(r))
+                    row = [None if k is None else r[k] for k in idx]
+                    for j in ids:
+                        if row[j]:
+                            row[j] = prefix + row[j]
+                    yield row
+
 
 def load_shapes(feeds, needed):
     """Shape points as (lon, lat, feed distance or None, geometric distance in metres), lightly simplified."""
     raw, done = defaultdict(list), {}
+    # Feeds often repeat one geometry under many shape ids (Jämtland: 8700 ids, 1400 geometries);
+    # simplify each geometry once, keyed by a digest so the raw points aren't kept. The lists are only
+    # read afterwards, so sharing them is safe.
+    seen = {}
 
     def finish(sid):
         pts = sorted(raw.pop(sid))
+        key = hashlib.blake2b(pickle.dumps([p[1:] for p in pts]), digest_size=16).digest()
+        if key in seen:
+            done[sid] = seen[key]
+            return
         has_dist = all(p[3] is not None for p in pts)
         out, gd = [], 0.0
         for i, (_, lon, lat, d) in enumerate(pts):
             if i:
                 gd += metres(out[-1][:2], (lon, lat))
             out.append((lon, lat, d if has_dist else None, gd))
-        done[sid] = simplify(out, SHAPE_TOLERANCE_M, xy=lambda p: p[:2], max_step_m=1000)
+        done[sid] = seen[key] = simplify(out, SHAPE_TOLERANCE_M, xy=lambda p: p[:2], max_step_m=1000)
 
     current = None
-    for p in feeds.rows("shapes.txt"):
-        sid = p["shape_id"]
+    for sid, seq, lon, lat, d in feeds.columns("shapes.txt", ("shape_id", "shape_pt_sequence", "shape_pt_lon",
+                                                              "shape_pt_lat", "shape_dist_traveled")):
         if sid not in needed:
             continue
         if sid != current and current in raw:
@@ -138,9 +172,7 @@ def load_shapes(feeds, needed):
         if sid in done:  # shape rows not grouped: re-open it
             raw[sid] = [(i, q[0], q[1], q[2]) for i, q in enumerate(done.pop(sid))]
         current = sid
-        d = p.get("shape_dist_traveled")
-        raw[sid].append((int(p["shape_pt_sequence"]), float(p["shape_pt_lon"]), float(p["shape_pt_lat"]),
-                         float(d) if d else None))
+        raw[sid].append((int(seq), float(lon), float(lat), float(d) if d else None))
     for sid in list(raw):
         finish(sid)
     return done
@@ -339,18 +371,19 @@ def build_region(cfg, gtfs_dirs, out_dir, colours=None, router=None, log=print):
     trip_stops = defaultdict(list)
     stop_routes = defaultdict(set)
     trip_span = {}  # trip -> (first departure, last arrival) in minutes after midnight
-    for st in feeds.rows("stop_times.txt"):
-        rid = trip_route.get(st["trip_id"])
-        if rid is None or not (st["departure_time"] or st["arrival_time"]):
+    for tid, stop, seq, arr, dep, dist in feeds.columns("stop_times.txt", ("trip_id", "stop_id", "stop_sequence",
+                                                                          "arrival_time", "departure_time",
+                                                                          "shape_dist_traveled")):
+        rid = trip_route.get(tid)
+        if rid is None or not (dep or arr):
             continue
-        stop_routes[st["stop_id"]].add(rid)
-        t0 = minutes(st["departure_time"] or st["arrival_time"])
-        t1 = minutes(st["arrival_time"] or st["departure_time"])
-        span = trip_span.get(st["trip_id"])
-        trip_span[st["trip_id"]] = (min(span[0], t0), max(span[1], t1)) if span else (t0, t1)
-        if st["trip_id"] in rep_trips:
-            dist = st.get("shape_dist_traveled")
-            trip_stops[st["trip_id"]].append((int(st["stop_sequence"]), st["stop_id"], float(dist) if dist else None))
+        stop_routes[stop].add(rid)
+        t0 = minutes(dep or arr)
+        t1 = minutes(arr or dep)
+        span = trip_span.get(tid)
+        trip_span[tid] = (min(span[0], t0), max(span[1], t1)) if span else (t0, t1)
+        if tid in rep_trips:
+            trip_stops[tid].append((int(seq), stop, float(dist) if dist else None))
     for v in trip_stops.values():
         v.sort()
 

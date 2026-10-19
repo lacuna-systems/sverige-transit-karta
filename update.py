@@ -19,15 +19,18 @@ all-of-Sweden view is rebuilt from the regions' data at the end of every run.
 import argparse
 import gzip
 import json
+import multiprocessing
 import os
 import shutil
 import sys
 import tempfile
+import threading
 import time
 import traceback
+import urllib.error
 import urllib.request
 import zipfile
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed, wait
 from pathlib import Path
 
 import aggregate
@@ -43,6 +46,7 @@ GTFS_FILES = ("agency.txt", "routes.txt", "trips.txt", "stops.txt", "stop_times.
               "calendar.txt", "calendar_dates.txt", "feed_info.txt")
 RAIL_MAX_AGE_DAYS = 30
 NETEX_CALL_SPACING_S = 7  # Trafiklab allows 10 calls a minute
+GTFS_CALL_SPACING_S = 7  # likewise for GTFS Regional, whose downloads run in parallel threads
 
 
 def download(url, dest, attempts=3):
@@ -57,14 +61,27 @@ def download(url, dest, attempts=3):
             if zipfile.is_zipfile(dest):
                 return
             raise RuntimeError("response is not a zip file")
-        except Exception:
-            if i == attempts - 1:
+        except Exception as e:
+            # A refused request (bad key, missing feed, quota used up) won't succeed on a retry; move on to
+            # the next source.
+            refused = isinstance(e, urllib.error.HTTPError) and e.code < 500 and e.code != 408
+            if refused or i == attempts - 1:
                 raise
             time.sleep(10 * (i + 1))
 
 
+_trafiklab_lock, _trafiklab_last = threading.Lock(), [0.0]
+
+
+def trafiklab_slot():
+    """Wait until another Trafiklab call is allowed (shared by the download threads)."""
+    with _trafiklab_lock:
+        time.sleep(max(0.0, _trafiklab_last[0] + GTFS_CALL_SPACING_S - time.monotonic()))
+        _trafiklab_last[0] = time.monotonic()
+
+
 def fetch_feed(feed, workdir, source, log):
-    """Download one feed and extract only the GTFS tables the build reads. Returns the directory."""
+    """Download one feed's zip into workdir. Returns its path."""
     zpath = workdir / f"{feed['slug']}.zip"
     key = os.environ.get("TRAFIKLAB_GTFS_REGIONAL_KEY")
     urls = []
@@ -75,6 +92,8 @@ def fetch_feed(feed, workdir, source, log):
     error = None
     for url in urls:
         try:
+            if url.startswith("https://opendata.samtrafiken.se/"):
+                trafiklab_slot()
             download(url, zpath)
             break
         except Exception as e:  # noqa: BLE001 - try the next source
@@ -82,7 +101,12 @@ def fetch_feed(feed, workdir, source, log):
             log(f"  download failed from {url.split('?')[0]}: {e}")
     else:
         raise RuntimeError(f"could not download {feed['slug']}: {error}")
-    out = workdir / feed["slug"]
+    return zpath
+
+
+def extract_feed(zpath, workdir):
+    """Extract only the GTFS tables the build reads from a feed zip, then delete it. Returns the directory."""
+    out = workdir / zpath.stem
     out.mkdir()
     with zipfile.ZipFile(zpath) as z:
         for name in GTFS_FILES:
@@ -162,14 +186,28 @@ def worker_router(path):
     return _ROUTER.get(path)
 
 
-def run_region(cfg, source, rail_path, relations):
-    """Download, colour and build one region (runs in a worker process)."""
-    log = lambda m: print(f"[{cfg['id']}] {m}", flush=True)  # noqa: E731
+def region_log(cfg):
+    return lambda m: print(f"[{cfg['id']}] {m}", flush=True)
+
+
+def download_region(cfg, workdir, source):
+    """Download one region's feeds (runs in a thread). Returns (cfg, zips or None, error, seconds)."""
+    start = time.time()
+    try:
+        zips = [fetch_feed(feed, workdir, source, region_log(cfg)) for feed in cfg["feeds"]]
+        return cfg, zips, None, time.time() - start
+    except Exception as e:  # noqa: BLE001 - one region failing must not stop the others
+        return cfg, None, f"{type(e).__name__}: {e}", time.time() - start
+
+
+def run_region(cfg, zips, rail_path, relations):
+    """Colour and build one downloaded region (runs in a worker process)."""
+    log = region_log(cfg)
     start = time.time()
     with tempfile.TemporaryDirectory(prefix=f"gtfs-{cfg['id']}-") as tmp:
         staging = DATA / f".{cfg['id']}.new"
         try:
-            dirs = [fetch_feed(feed, Path(tmp), source, log) for feed in cfg["feeds"]]
+            dirs = [extract_feed(z, Path(tmp)) for z in zips]
             refresh_colours(cfg["id"], stops_bbox(dirs), relations)
             shutil.rmtree(staging, ignore_errors=True)
             router = worker_router(str(rail_path)) if rail_path else None
@@ -232,14 +270,35 @@ def main():
     if unknown:
         sys.exit(f"unknown region(s): {', '.join(sorted(unknown))}")
 
-    if args.netex or args.netex_from:
-        update_netex(wanted, args.netex_from)
-    rail_path = ensure_rail_network()
-    relations = colour_relations()
+    # The feeds download while NeTEx and OSM are fetched (all network-bound); regions are built once
+    # those are done, the biggest downloads first so a large region doesn't start last.
+    with tempfile.TemporaryDirectory(prefix="gtfs-") as tmp, \
+            ThreadPoolExecutor(max_workers=3) as prep, ThreadPoolExecutor(max_workers=4) as fetch:
+        downloads = [fetch.submit(download_region, cfg, Path(tmp), args.source) for cfg in wanted]
+        netex_job = prep.submit(update_netex, wanted, args.netex_from) if args.netex or args.netex_from else None
+        rail_job, colours_job = prep.submit(ensure_rail_network), prep.submit(colour_relations)
+        if netex_job:
+            netex_job.result()  # must finish before the colours files are rewritten
+        rail_path, relations = rail_job.result(), colours_job.result()
 
-    with ProcessPoolExecutor(max_workers=max(1, args.jobs)) as pool:
-        futures = [(cfg, pool.submit(run_region, cfg, args.source, rail_path, relations)) for cfg in wanted]
-        results = [(cfg, *f.result()) for cfg, f in futures]
+        done, rest = wait(downloads, timeout=0)
+        size = lambda f: sum(z.stat().st_size for z in f.result()[1] or [])  # noqa: E731
+        results = {}
+        # forkserver: fork()ing while the download threads run can deadlock a worker (3.12's default).
+        ctx = multiprocessing.get_context("forkserver")
+        with ProcessPoolExecutor(max_workers=max(1, args.jobs), mp_context=ctx) as pool:
+            builds = []
+            for f in [*sorted(done, key=size, reverse=True), *as_completed(rest)]:
+                cfg, zips, error, dl_time = f.result()
+                if error:
+                    region_log(cfg)(error)
+                    results[cfg["id"]] = (cfg, "failed", error, dl_time)
+                else:
+                    builds.append((cfg, dl_time, pool.submit(run_region, cfg, zips, rail_path, relations)))
+            for cfg, dl_time, b in builds:
+                status, details, build_time = b.result()
+                results[cfg["id"]] = (cfg, status, details, dl_time + build_time)
+        results = [results[cfg["id"]] for cfg in wanted]
 
     try:
         meta = aggregate.build_sweden(config, DATA)
