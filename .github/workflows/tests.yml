@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_call:  # run before every deploy (pages.yml)
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Used to syntax-check the page's script.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Lint
+        run: pipx run ruff check .
+
+      - name: Run tests
+        env:
+          PYTHONHASHSEED: "0"
+        run: python -m unittest discover -s tests -t . -v

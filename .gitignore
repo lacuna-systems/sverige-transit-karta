@@ -1,0 +1,7 @@
+__pycache__/
+.venv/
+cache/
+site/data/.*.new/
+.idea
+*.iml
+.env

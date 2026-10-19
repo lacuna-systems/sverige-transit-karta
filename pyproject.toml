@@ -1,0 +1,17 @@
+[project]
+name = "vasttrafik-map"
+version = "0.1.0"
+description = "Static web map of Swedish public transport lines, built from GTFS, OpenStreetMap and NeTEx data"
+requires-python = ">=3.12"
+license = "Unlicense"
+license-files = ["LICENSE"]
+dependencies = []
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I", "UP", "C4", "SIM"]
+# zip() over a sequence and its own tail (zip(seq, seq[1:])) is the usual idiom here, so no strict=.
+ignore = ["B905"]

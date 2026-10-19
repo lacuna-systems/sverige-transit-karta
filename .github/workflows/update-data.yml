@@ -1,0 +1,93 @@
+name: Update transit data
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"  # Mondays 03:17 UTC; the first Monday of each month also refreshes NeTEx
+  workflow_dispatch:
+    inputs:
+      regions:
+        description: "Region ids to rebuild, space separated (empty = all)"
+        required: false
+        default: ""
+      source:
+        description: "Where to download GTFS from"
+        type: choice
+        options: [auto, mirror, trafiklab]
+        default: auto
+      netex:
+        description: "Also download Trafiklab NeTEx (line colours); uses 21 of the key's monthly calls"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache key for the OSM rail network (refreshed monthly)
+        id: month
+        run: echo "month=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: cache
+          key: osm-rail-${{ steps.month.outputs.month }}
+          restore-keys: osm-rail-
+
+      # Trafiklab's free tier allows 50 NeTEx calls a month, so NeTEx is only pulled on the
+      # first scheduled run of each month (or when asked for in a manual run).
+      - name: Decide whether to refresh NeTEx
+        id: netex
+        env:
+          MANUAL: ${{ inputs.netex }}
+        run: |
+          if [ "$MANUAL" = "true" ] || { [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%d)" -le 7 ]; }; then
+            echo "flag=--netex" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download feeds and rebuild regions
+        env:
+          # Both optional. Without a GTFS key the keyless Mobility Database mirror is used;
+          # without a NeTEx key the stored NeTEx results in colors/ are kept.
+          TRAFIKLAB_GTFS_REGIONAL_KEY: ${{ secrets.TRAFIKLAB_GTFS_REGIONAL_KEY }}
+          TRAFIKLAB_NETEX_KEY: ${{ secrets.TRAFIKLAB_NETEX_KEY }}
+          REGIONS: ${{ inputs.regions }}
+          SOURCE: ${{ inputs.source || 'auto' }}
+          NETEX: ${{ steps.netex.outputs.flag }}
+          PYTHONHASHSEED: "0"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          # NETEX and REGIONS are word lists (a flag, and space-separated region ids).
+          # shellcheck disable=SC2086
+          python update.py --source "$SOURCE" --jobs 4 $NETEX $REGIONS
+
+      - name: Check the new data
+        env:
+          PYTHONHASHSEED: "0"
+        run: python -m unittest discover -s tests -t .
+
+      - name: Commit changed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data colors
+          if git diff --cached --quiet; then
+            echo "Data unchanged; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Update transit data $(date -u +%F)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

@@ -1,0 +1,350 @@
+{
+  "_comment": "One entry per map region. feeds: Trafiklab GTFS Regional slug + Mobility Database mirror id. include/exclude_agencies: regex on agency_name. modes: which of tram, metro, train, bus, ferry to keep (default all). category_colours: NeTEx GroupOfLines name (or name prefix) -> colour, used when OSM has no colour for a line. exclude_routes: GTFS route_ids to leave out (lines that are not valid, e.g. depot runs). brand_colours: the operator's brand colour, keyed by agency name, mode or \"*\", used when neither OSM nor NeTEx has a colour (from the operators' own websites, logos and vehicle manuals).",
+  "default": "vt",
+  "regions": [
+    {
+      "id": "vt",
+      "name": "Västtrafik",
+      "area": "Västra Götaland",
+      "feeds": [
+        {
+          "slug": "vt",
+          "mdb": 3248
+        }
+      ],
+      "exclude_routes": [
+        "9011014510200000",
+        "9011014510100000"
+      ],
+      "brand_colours": {
+        "*": "#0079B4"
+      },
+      "include_agencies": "^Västtrafik$"
+    },
+    {
+      "id": "sl",
+      "name": "SL",
+      "area": "Stockholm",
+      "feeds": [
+        {
+          "slug": "sl",
+          "mdb": 3237
+        }
+      ],
+      "brand_colours": {
+        "*": "#0097DA"
+      },
+      "exclude_agencies": "Färdtjänst"
+    },
+    {
+      "id": "skane",
+      "name": "Skånetrafiken",
+      "area": "Skåne",
+      "feeds": [
+        {
+          "slug": "skane",
+          "mdb": 3246
+        }
+      ],
+      "exclude_routes": [
+        "9011012091600000"
+      ],
+      "_category_colours_source": "Skånetrafiken's line type colours (gw-tps/api/v1/LineTypeFilters); keys match NeTEx GroupOfLines names by prefix",
+      "category_colours": {
+        "Stadsbuss": "#3EA827",
+        "Spårvagn": "#3EA827",
+        "Regionbuss": "#FEC900",
+        "Pågatåg": "#716CB8",
+        "Öresundståg": "#706C6A",
+        "Krösatåg": "#CAC6C5",
+        "Vägfärja": "#231161"
+      }
+    },
+    {
+      "id": "ul",
+      "name": "UL",
+      "area": "Uppsala",
+      "feeds": [
+        {
+          "slug": "ul",
+          "mdb": 3238
+        }
+      ],
+      "brand_colours": {
+        "*": "#F1C800"
+      }
+    },
+    {
+      "id": "otraf",
+      "name": "Östgötatrafiken",
+      "area": "Östergötland",
+      "feeds": [
+        {
+          "slug": "otraf",
+          "mdb": 3240
+        }
+      ],
+      "brand_colours": {
+        "*": "#E10E1C"
+      }
+    },
+    {
+      "id": "jlt",
+      "name": "Jönköpings Länstrafik",
+      "area": "Jönköping",
+      "feeds": [
+        {
+          "slug": "jlt",
+          "mdb": 3241
+        }
+      ],
+      "brand_colours": {
+        "*": "#00324D"
+      }
+    },
+    {
+      "id": "halland",
+      "name": "Hallandstrafiken",
+      "area": "Halland",
+      "feeds": [
+        {
+          "slug": "halland",
+          "mdb": 3247
+        }
+      ],
+      "brand_colours": {
+        "*": "#006FB7"
+      }
+    },
+    {
+      "id": "sormland",
+      "name": "Sörmlandstrafiken",
+      "area": "Södermanland",
+      "feeds": [
+        {
+          "slug": "sormland",
+          "mdb": 3239
+        }
+      ],
+      "brand_colours": {
+        "*": "#097840"
+      }
+    },
+    {
+      "id": "krono",
+      "name": "Länstrafiken Kronoberg",
+      "area": "Kronoberg",
+      "feeds": [
+        {
+          "slug": "krono",
+          "mdb": 3242
+        }
+      ],
+      "brand_colours": {
+        "*": "#1D551B"
+      }
+    },
+    {
+      "id": "klt",
+      "name": "Kalmar länstrafik",
+      "area": "Kalmar",
+      "feeds": [
+        {
+          "slug": "klt",
+          "mdb": 3243
+        }
+      ],
+      "brand_colours": {
+        "*": "#C8102E"
+      }
+    },
+    {
+      "id": "blekinge",
+      "name": "Blekingetrafiken",
+      "area": "Blekinge",
+      "feeds": [
+        {
+          "slug": "blekinge",
+          "mdb": 3245
+        }
+      ],
+      "brand_colours": {
+        "*": "#E0213B"
+      }
+    },
+    {
+      "id": "gotland",
+      "name": "Region Gotland",
+      "area": "Gotland",
+      "feeds": [
+        {
+          "slug": "gotland",
+          "mdb": 3244
+        }
+      ],
+      "brand_colours": {
+        "*": "#007864"
+      }
+    },
+    {
+      "id": "varm",
+      "name": "Värmlandstrafik",
+      "area": "Värmland",
+      "feeds": [
+        {
+          "slug": "varm",
+          "mdb": 3249
+        }
+      ],
+      "brand_colours": {
+        "*": "#003A70"
+      }
+    },
+    {
+      "id": "orebro",
+      "name": "Länstrafiken Örebro",
+      "area": "Örebro",
+      "feeds": [
+        {
+          "slug": "orebro",
+          "mdb": 3250
+        }
+      ],
+      "brand_colours": {
+        "*": "#0073B9"
+      }
+    },
+    {
+      "id": "vastmanland",
+      "name": "VL",
+      "area": "Västmanland",
+      "feeds": [
+        {
+          "slug": "vastmanland",
+          "mdb": 3251
+        }
+      ],
+      "brand_colours": {
+        "*": "#00C4EF"
+      }
+    },
+    {
+      "id": "dt",
+      "name": "Dalatrafik",
+      "area": "Dalarna",
+      "feeds": [
+        {
+          "slug": "dt",
+          "mdb": 3252
+        }
+      ],
+      "brand_colours": {
+        "*": "#DD0034"
+      }
+    },
+    {
+      "id": "xt",
+      "name": "X-trafik",
+      "area": "Gävleborg",
+      "feeds": [
+        {
+          "slug": "xt",
+          "mdb": 3253
+        }
+      ],
+      "brand_colours": {
+        "*": "#DA291C"
+      }
+    },
+    {
+      "id": "dintur",
+      "name": "Din Tur",
+      "area": "Västernorrland",
+      "feeds": [
+        {
+          "slug": "dintur",
+          "mdb": 3254
+        }
+      ],
+      "brand_colours": {
+        "*": "#00964F"
+      }
+    },
+    {
+      "id": "jamtland",
+      "name": "Länstrafiken Jämtland",
+      "area": "Jämtland",
+      "feeds": [
+        {
+          "slug": "jamtland",
+          "mdb": 3255
+        }
+      ],
+      "brand_colours": {
+        "*": "#DC314D"
+      }
+    },
+    {
+      "id": "vasterbotten",
+      "name": "Länstrafiken Västerbotten",
+      "area": "Västerbotten",
+      "feeds": [
+        {
+          "slug": "vasterbotten",
+          "mdb": 3256
+        }
+      ],
+      "brand_colours": {
+        "*": "#0A2147"
+      }
+    },
+    {
+      "id": "norrbotten",
+      "name": "Länstrafiken Norrbotten",
+      "area": "Norrbotten",
+      "feeds": [
+        {
+          "slug": "norrbotten",
+          "mdb": 3257
+        }
+      ]
+    },
+    {
+      "id": "trains",
+      "name": "Long-distance trains",
+      "area": "SJ, Snälltåget, Tågab, MTRX",
+      "modes": [
+        "train"
+      ],
+      "group_by_termini": true,
+      "agency_labels": {
+        "SJ AB": "SJ",
+        "MTR Express AB": "MTRX",
+        "Snälltåget": "Snälltåget",
+        "Tågab": "Tågab"
+      },
+      "feeds": [
+        {
+          "slug": "sj",
+          "mdb": 3273
+        },
+        {
+          "slug": "snalltaget",
+          "mdb": 3277
+        },
+        {
+          "slug": "tagab",
+          "mdb": 3284
+        },
+        {
+          "slug": "vr",
+          "mdb": 3286
+        }
+      ],
+      "brand_colours": {
+        "SJ AB": "#00AB3B",
+        "Tågab": "#D8261D"
+      }
+    }
+  ]
+}
