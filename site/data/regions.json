@@ -5,34 +5,34 @@
    "id": "sweden",
    "name": "All of Sweden",
    "area": "22 regions",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
-    11.6076,
-    55.656,
+    11.6057,
+    55.6552,
     21.4502,
-    65.7946
+    65.7953
    ],
    "modes": {
     "tram": 28,
     "metro": 7,
-    "train": 134,
-    "bus": 3521,
+    "train": 130,
+    "bus": 3526,
     "ferry": 59
    },
    "modes_off": [
     "bus",
     "ferry"
    ],
-   "lines": 3749,
-   "stations": 49174
+   "lines": 3750,
+   "stations": 49115
   },
   {
    "id": "vt",
    "name": "Västtrafik",
    "area": "Västra Götaland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
-    11.2628,
+    11.2626,
     57.3881,
     14.1849,
     59.0064
@@ -40,19 +40,19 @@
    "modes": {
     "tram": 13,
     "train": 14,
-    "bus": 616,
+    "bus": 620,
     "ferry": 16
    },
-   "lines": 659,
-   "stations": 8408
+   "lines": 663,
+   "stations": 8411
   },
   {
    "id": "sl",
    "name": "SL",
    "area": "Stockholm",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
-    17.5197,
+    17.523,
     58.9738,
     18.9486,
     60.024
@@ -61,17 +61,17 @@
     "tram": 12,
     "metro": 7,
     "train": 5,
-    "bus": 546,
+    "bus": 544,
     "ferry": 33
    },
-   "lines": 603,
-   "stations": 5734
+   "lines": 601,
+   "stations": 5730
   },
   {
    "id": "skane",
    "name": "Skånetrafiken",
    "area": "Skåne",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     12.588,
     55.3803,
@@ -91,7 +91,7 @@
    "id": "ul",
    "name": "UL",
    "area": "Uppsala",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     16.8744,
     59.5438,
@@ -99,17 +99,17 @@
     60.5609
    ],
    "modes": {
-    "bus": 233,
+    "bus": 232,
     "ferry": 1
    },
-   "lines": 234,
+   "lines": 233,
    "stations": 3760
   },
   {
    "id": "otraf",
    "name": "Östgötatrafiken",
    "area": "Östergötland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     14.8409,
     57.7935,
@@ -119,16 +119,16 @@
    "modes": {
     "tram": 2,
     "train": 5,
-    "bus": 113
+    "bus": 112
    },
-   "lines": 120,
+   "lines": 119,
    "stations": 1570
   },
   {
    "id": "jlt",
    "name": "Jönköpings Länstrafik",
    "area": "Jönköping",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     13.315,
     57.0007,
@@ -141,13 +141,13 @@
     "ferry": 1
    },
    "lines": 96,
-   "stations": 1633
+   "stations": 1638
   },
   {
    "id": "halland",
    "name": "Hallandstrafiken",
    "area": "Halland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     12.1769,
     56.4319,
@@ -155,16 +155,16 @@
     57.2815
    ],
    "modes": {
-    "bus": 79
+    "bus": 81
    },
-   "lines": 79,
-   "stations": 1294
+   "lines": 81,
+   "stations": 1277
   },
   {
    "id": "sormland",
    "name": "Sörmlandstrafiken",
    "area": "Södermanland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     15.8125,
     58.6764,
@@ -172,16 +172,16 @@
     59.4469
    ],
    "modes": {
-    "bus": 121
+    "bus": 120
    },
-   "lines": 121,
-   "stations": 1992
+   "lines": 120,
+   "stations": 1969
   },
   {
    "id": "krono",
    "name": "Länstrafiken Kronoberg",
    "area": "Kronoberg",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     13.2946,
     56.2885,
@@ -189,35 +189,35 @@
     57.2884
    ],
    "modes": {
-    "bus": 136
+    "bus": 137
    },
-   "lines": 136,
-   "stations": 1566
+   "lines": 137,
+   "stations": 1565
   },
   {
    "id": "klt",
    "name": "Kalmar länstrafik",
    "area": "Kalmar",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-02",
    "bbox": [
     15.313,
     56.3529,
-    16.948,
+    16.9479,
     57.9953
    ],
    "modes": {
     "train": 4,
-    "bus": 203,
+    "bus": 202,
     "ferry": 1
    },
-   "lines": 208,
-   "stations": 2887
+   "lines": 207,
+   "stations": 2872
   },
   {
    "id": "blekinge",
    "name": "Blekingetrafiken",
    "area": "Blekinge",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     14.5443,
     56.0366,
@@ -235,7 +235,7 @@
    "id": "gotland",
    "name": "Region Gotland",
    "area": "Gotland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     18.1461,
     57.1068,
@@ -252,7 +252,7 @@
    "id": "varm",
    "name": "Värmlandstrafik",
    "area": "Värmland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     12.1144,
     59.1216,
@@ -264,13 +264,13 @@
     "bus": 138
    },
    "lines": 143,
-   "stations": 1767
+   "stations": 1764
   },
   {
    "id": "orebro",
    "name": "Länstrafiken Örebro",
    "area": "Örebro",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     14.4601,
     58.8544,
@@ -287,7 +287,7 @@
    "id": "vastmanland",
    "name": "VL",
    "area": "Västmanland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     15.6793,
     59.3964,
@@ -304,7 +304,7 @@
    "id": "dt",
    "name": "Dalatrafik",
    "area": "Dalarna",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     13.0714,
     60.0704,
@@ -321,7 +321,7 @@
    "id": "xt",
    "name": "X-trafik",
    "area": "Gävleborg",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     15.7082,
     60.416,
@@ -339,24 +339,24 @@
    "id": "dintur",
    "name": "Din Tur",
    "area": "Västernorrland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     15.2102,
     62.219,
     18.8233,
-    63.6171
+    63.6266
    ],
    "modes": {
-    "bus": 146
+    "bus": 148
    },
-   "lines": 146,
-   "stations": 2130
+   "lines": 148,
+   "stations": 2132
   },
   {
    "id": "jamtland",
    "name": "Länstrafiken Jämtland",
    "area": "Jämtland",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     12.6808,
     61.8261,
@@ -364,16 +364,16 @@
     64.9707
    ],
    "modes": {
-    "bus": 93
+    "bus": 94
    },
-   "lines": 93,
-   "stations": 1833
+   "lines": 94,
+   "stations": 1838
   },
   {
    "id": "vasterbotten",
    "name": "Länstrafiken Västerbotten",
    "area": "Västerbotten",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     15.1432,
     63.564,
@@ -381,16 +381,16 @@
     65.8639
    ],
    "modes": {
-    "bus": 173
+    "bus": 174
    },
-   "lines": 173,
-   "stations": 1907
+   "lines": 174,
+   "stations": 1903
   },
   {
    "id": "norrbotten",
    "name": "Länstrafiken Norrbotten",
    "area": "Norrbotten",
-   "feed_version": "2026-10-26",
+   "feed_version": "2026-11-01",
    "bbox": [
     17.1692,
     64.3338,
@@ -401,13 +401,13 @@
     "bus": 120
    },
    "lines": 120,
-   "stations": 1583
+   "stations": 1582
   },
   {
    "id": "trains",
    "name": "Long-distance trains",
    "area": "SJ, Snälltåget, Tågab, MTRX",
-   "feed_version": "2026-10-25",
+   "feed_version": "2026-11-01",
    "bbox": [
     10.6564,
     47.4542,
@@ -415,10 +415,10 @@
     68.4288
    ],
    "modes": {
-    "train": 66
+    "train": 62
    },
-   "lines": 66,
-   "stations": 220
+   "lines": 62,
+   "stations": 219
   }
  ]
 }
